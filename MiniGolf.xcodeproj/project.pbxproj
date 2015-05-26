@@ -14,6 +14,9 @@
 		118236701B13981B00F66E7E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1182366F1B13981B00F66E7E /* Images.xcassets */; };
 		118236731B13981B00F66E7E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 118236711B13981B00F66E7E /* LaunchScreen.xib */; };
 		1182367F1B13981B00F66E7E /* MiniGolfTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1182367E1B13981B00F66E7E /* MiniGolfTests.m */; };
+		118236891B13B15400F66E7E /* ballputtdrill2.png in Resources */ = {isa = PBXBuildFile; fileRef = 118236881B13B15400F66E7E /* ballputtdrill2.png */; };
+		1182368B1B13E5B300F66E7E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1182368A1B13E5B300F66E7E /* QuartzCore.framework */; };
+		1182368D1B13E5C100F66E7E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1182368C1B13E5C100F66E7E /* CoreGraphics.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +43,9 @@
 		118236781B13981B00F66E7E /* MiniGolfTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MiniGolfTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1182367D1B13981B00F66E7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1182367E1B13981B00F66E7E /* MiniGolfTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MiniGolfTests.m; sourceTree = "<group>"; };
+		118236881B13B15400F66E7E /* ballputtdrill2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ballputtdrill2.png; sourceTree = "<group>"; };
+		1182368A1B13E5B300F66E7E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		1182368C1B13E5C100F66E7E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +53,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1182368D1B13E5C100F66E7E /* CoreGraphics.framework in Frameworks */,
+				1182368B1B13E5B300F66E7E /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +71,8 @@
 		118236561B13981B00F66E7E = {
 			isa = PBXGroup;
 			children = (
+				1182368C1B13E5C100F66E7E /* CoreGraphics.framework */,
+				1182368A1B13E5B300F66E7E /* QuartzCore.framework */,
 				118236611B13981B00F66E7E /* MiniGolf */,
 				1182367B1B13981B00F66E7E /* MiniGolfTests */,
 				118236601B13981B00F66E7E /* Products */,
@@ -96,6 +106,7 @@
 		118236621B13981B00F66E7E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				118236881B13B15400F66E7E /* ballputtdrill2.png */,
 				118236631B13981B00F66E7E /* Info.plist */,
 				118236641B13981B00F66E7E /* main.m */,
 			);
@@ -201,6 +212,7 @@
 			files = (
 				1182366E1B13981B00F66E7E /* Main.storyboard in Resources */,
 				118236731B13981B00F66E7E /* LaunchScreen.xib in Resources */,
+				118236891B13B15400F66E7E /* ballputtdrill2.png in Resources */,
 				118236701B13981B00F66E7E /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
