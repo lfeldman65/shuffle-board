@@ -17,13 +17,13 @@
 
 @property (strong, nonatomic) IBOutlet UIImageView *cup;
 @property (strong, nonatomic) IBOutlet UIImageView *ball;
-@property (strong, nonatomic) IBOutlet UIImageView *obstacle1;
-@property (strong, nonatomic) CALayer *ballLayer;
+
+@property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *verWall;
+@property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *horWall;
+
 
 @property (nonatomic) CGPoint firstPoint;
 @property (nonatomic) CGPoint lastPoint;
-@property (nonatomic) CGPoint realDest;
-@property (nonatomic) CGPoint shotVector;
 @property (nonatomic) CGPoint shotVectorUnit;
 
 @property (nonatomic) float ballVelocityX;

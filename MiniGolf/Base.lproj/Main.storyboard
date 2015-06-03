@@ -20,21 +20,46 @@
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="724"/>
                                 <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.25098040700000002" alpha="1" colorSpace="calibratedRGB"/>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nvq-7Q-miT" userLabel="ball">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ballputtdrill2.png" translatesAutoresizingMaskIntoConstraints="NO" id="Nvq-7Q-miT" userLabel="ball">
                                 <rect key="frame" x="274" y="492" width="53" height="46"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ehl-VQ-4PP" userLabel="cup">
                                 <rect key="frame" x="274" y="65" width="53" height="46"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4g6-4L-JUE" userLabel="obstacle1">
-                                <rect key="frame" x="386" y="208" width="111" height="128"/>
+                                <rect key="frame" x="66" y="379" width="178" height="11"/>
+                                <color key="backgroundColor" red="1" green="0.18565216100000001" blue="0.037689089940000003" alpha="1" colorSpace="calibratedRGB"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WUV-ho-9ge" userLabel="obstacle1">
+                                <rect key="frame" x="66" y="254" width="178" height="12"/>
+                                <color key="backgroundColor" red="1" green="0.18565216100000001" blue="0.037689089940000003" alpha="1" colorSpace="calibratedRGB"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gxN-L1-fjh" userLabel="obstacle1">
+                                <rect key="frame" x="66" y="254" width="13" height="128"/>
+                                <color key="backgroundColor" red="1" green="0.18565216100000001" blue="0.037689089940000003" alpha="1" colorSpace="calibratedRGB"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b4o-oY-gaO" userLabel="obstacle1">
+                                <rect key="frame" x="113" y="434" width="15" height="128"/>
+                                <color key="backgroundColor" red="1" green="0.18565216100000001" blue="0.037689089940000003" alpha="1" colorSpace="calibratedRGB"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="ball" destination="Nvq-7Q-miT" id="NWl-Xq-4nj"/>
+                        <outlet property="cup" destination="ehl-VQ-4PP" id="BwA-sM-UcO"/>
+                        <outletCollection property="verWall" destination="b4o-oY-gaO" id="wdg-g6-eSM"/>
+                        <outletCollection property="horWall" destination="4g6-4L-JUE" id="4fI-vR-oxs"/>
+                        <outletCollection property="horWall" destination="WUV-ho-9ge" id="Rp5-8t-7VK"/>
+                        <outletCollection property="verWall" destination="gxN-L1-fjh" id="faS-Ct-qyc"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
     </scenes>
+    <resources>
+        <image name="ballputtdrill2.png" width="114" height="114"/>
+    </resources>
 </document>
