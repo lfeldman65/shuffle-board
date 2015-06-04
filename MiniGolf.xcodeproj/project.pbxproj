@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		117C65E51B20A82200117B25 /* gear.png in Resources */ = {isa = PBXBuildFile; fileRef = 117C65E41B20A82200117B25 /* gear.png */; };
 		118236651B13981B00F66E7E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 118236641B13981B00F66E7E /* main.m */; };
 		118236681B13981B00F66E7E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 118236671B13981B00F66E7E /* AppDelegate.m */; };
 		1182366B1B13981B00F66E7E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1182366A1B13981B00F66E7E /* ViewController.m */; };
@@ -30,6 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		117C65E41B20A82200117B25 /* gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gear.png; sourceTree = "<group>"; };
 		1182365F1B13981B00F66E7E /* MiniGolf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniGolf.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		118236631B13981B00F66E7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		118236641B13981B00F66E7E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 				1182366C1B13981B00F66E7E /* Main.storyboard */,
 				1182366F1B13981B00F66E7E /* Images.xcassets */,
 				118236711B13981B00F66E7E /* LaunchScreen.xib */,
+				117C65E41B20A82200117B25 /* gear.png */,
 				118236621B13981B00F66E7E /* Supporting Files */,
 			);
 			path = MiniGolf;
@@ -211,6 +214,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1182366E1B13981B00F66E7E /* Main.storyboard in Resources */,
+				117C65E51B20A82200117B25 /* gear.png in Resources */,
 				118236731B13981B00F66E7E /* LaunchScreen.xib in Resources */,
 				118236891B13B15400F66E7E /* ballputtdrill2.png in Resources */,
 				118236701B13981B00F66E7E /* Images.xcassets in Resources */,
@@ -430,6 +434,7 @@
 				118236841B13981B00F66E7E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		118236851B13981B00F66E7E /* Build configuration list for PBXNativeTarget "MiniGolfTests" */ = {
 			isa = XCConfigurationList;
@@ -438,6 +443,7 @@
 				118236871B13981B00F66E7E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
