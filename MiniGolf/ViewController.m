@@ -14,11 +14,12 @@
 
 #import "ViewController.h"
 #define swipeIncrement .001
-#define speedScale 5
+#define speedScale 4
 #define speedDamping .97
 #define centerScore 15
 #define ring1Score 2
 #define ring2Score 1
+#define maxShots 10
 
 @interface ViewController ()
 
@@ -64,26 +65,27 @@ float swipeTime;
     float sWidth = [UIScreen mainScreen].bounds.size.width;
     float sHeight = [UIScreen mainScreen].bounds.size.height;
     float sidePadding = .16*sWidth;                                  // space between sides and targets
-    float padding = .06*sWidth;                                      // space between targets
+    float padding = .08*sWidth;                                      // space between targets
     float targetSize = (sWidth - 2*sidePadding - 4*padding)/5;
     
     [self.bgImage setFrame:CGRectMake(0, 0, sWidth, sHeight)];
     self.bgImage.center = CGPointMake(.5*[UIScreen mainScreen].bounds.size.width, .5*[UIScreen mainScreen].bounds.size.height);
     
-    [self.startButton setFrame:CGRectMake(0, 0, .3*[UIScreen mainScreen].bounds.size.width, 75)];
-    self.startButton.center = CGPointMake(.1*[UIScreen mainScreen].bounds.size.width, .07*[UIScreen mainScreen].bounds.size.height);
-    self.startButton.titleLabel.font = [UIFont fontWithName: @"Papyrus" size: .03*[UIScreen mainScreen].bounds.size.width];
+    [self.startButton setFrame:CGRectMake(0, 0, .3*[UIScreen mainScreen].bounds.size.width,.07*sHeight)];
+    self.startButton.center = CGPointMake(.12*[UIScreen mainScreen].bounds.size.width, .07*[UIScreen mainScreen].bounds.size.height);
+    self.startButton.titleLabel.font = [UIFont fontWithName: @"Papyrus" size: .04*[UIScreen mainScreen].bounds.size.width];
     
     [self.scoreLabel setFrame:CGRectMake(0, 0, .3*[UIScreen mainScreen].bounds.size.width, 50)];
-    self.scoreLabel.font = [UIFont fontWithName: @"Papyrus" size: .03*[UIScreen mainScreen].bounds.size.width];
+    self.scoreLabel.font = [UIFont fontWithName: @"Papyrus" size: .04*[UIScreen mainScreen].bounds.size.width];
     self.scoreLabel.center = CGPointMake(.35*[UIScreen mainScreen].bounds.size.width, .07*[UIScreen mainScreen].bounds.size.height);
     
     [self.shotLabel setFrame:CGRectMake(0, 0, .3*[UIScreen mainScreen].bounds.size.width, 50)];
     self.shotLabel.center = CGPointMake(.65*[UIScreen mainScreen].bounds.size.width, .07*[UIScreen mainScreen].bounds.size.height);
-    self.shotLabel.font = [UIFont fontWithName: @"Papyrus" size: .03*[UIScreen mainScreen].bounds.size.width];
+    self.shotLabel.font = [UIFont fontWithName: @"Papyrus" size: .04*[UIScreen mainScreen].bounds.size.width];
     
-    [self.settingsButton setFrame:CGRectMake(0, 0, .07*[UIScreen mainScreen].bounds.size.width, .07*[UIScreen mainScreen].bounds.size.width)];
-    self.settingsButton.center = CGPointMake(.9*[UIScreen mainScreen].bounds.size.width, 0.07*[UIScreen mainScreen].bounds.size.height);
+    [self.settingsButton setFrame:CGRectMake(0, 0, .4*sWidth, .07*sHeight)];
+    self.settingsButton.center = CGPointMake(.88*sWidth, 0.07*[UIScreen mainScreen].bounds.size.height);
+    self.settingsButton.titleLabel.font = [UIFont fontWithName: @"Papyrus" size: .04*[UIScreen mainScreen].bounds.size.width];
     
 
     float col1X = sidePadding;
@@ -133,37 +135,30 @@ float swipeTime;
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    self.ball.hidden = YES;
-    shots = 0;
-    score = 0;
+    [self newGame];
 
 }
 
 - (IBAction)newGamePressed:(id)sender {
     
-    [self newGame];
+   
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Game in Progress" message:@"Are you sure you want to start a new game?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Restart", nil];
+    alertView.tag = 1;
+    [alertView show];
     
+
 }
 
 - (void)newGame {
     
-    if(shots>0) {
-        
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Game in Progress" message:@"Are you sure you want to start a new game?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Restart", nil];
-        alertView.tag = 1;
-        [alertView show];
-        
-    } else {
+    self.ball.hidden = NO;
+    score = 0;
+    shots = 0;
     
-        self.ball.hidden = NO;
-        score = 0;
-        shots = 0;
-        
-        self.scoreLabel.text = @"Score: 0";
-        self.shotLabel.text = @"Shots: 0";
-        
-        [self placeBall];
-    }
+    self.scoreLabel.text = @"Score: 0";
+    self.shotLabel.text = @"Shots: 0";
+    [self placeBall];
+    
 }
 
 -(void)placeBall {
@@ -174,14 +169,20 @@ float swipeTime;
     
     [self.view setUserInteractionEnabled:YES];
     
-    int sWidthInt = [UIScreen mainScreen].bounds.size.width;
-    int xPosition = arc4random() % sWidthInt;
+    int sWidthInt = [UIScreen mainScreen].bounds.size.width - self.ball.frame.size.width;
+    int xPosition = (arc4random() % sWidthInt) + self.ball.frame.size.width/2;
     
     self.ball.center = CGPointMake(xPosition, .95*[UIScreen mainScreen].bounds.size.height);
     
-   // self.ball.center = CGPointMake(self.image24.frame.origin.x, self.image24.frame.origin.y);
-
-
+ //   self.ball.center = CGPointMake(self.image7.frame.origin.x, self.image7.frame.origin.y);
+    
+    if (shots >= maxShots) {
+        
+        self.ball.hidden = YES;
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Game Over" message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        alertView.tag = 2;
+        [alertView show];
+    }
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -401,6 +402,8 @@ float swipeTime;
         self.overlapArray[24] = @"true";
         
     }
+    
+    NSLog(@"overlap = %@", self.overlapArray);
 
     [self getScore];
     
@@ -568,41 +571,51 @@ float swipeTime;
     NSString *shotString = [NSString stringWithFormat:@"Shots: %i", shots];
     self.shotLabel.text = shotString;
     
-    if (shots >= 10) {
-        
-        [self.view setUserInteractionEnabled:YES];
-        self.ball.hidden = YES;
+    [self.view setUserInteractionEnabled:YES];
+    
+    self.placeBallTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(placeBall) userInfo:nil repeats:NO];
 
-    } else {
-        
-        self.placeBallTimer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(placeBall) userInfo:nil repeats:NO];
-
-    }
 
 }
 
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    switch (buttonIndex) {
-        case 0: {
-            break;
-            
+    if(alertView.tag == 1) {
+    
+        switch (buttonIndex) {
+            case 0: {
+                break;
+            }
+                
+            case 1: {
+                shots = 0;
+                [self newGame];
+                break;
+                
+            }
+                
+            default: {
+                break;
+            }
         }
-            
-        case 1: {
-            shots = 0;
-            [self newGame];
-            break;
-            
-        }
-            
-        default: {
-            break;
+    }
+    
+    if(alertView.tag == 2) {
+        
+        switch (buttonIndex) {
+            case 0: {
+                shots = 0;
+                [self newGame];
+                break;
+            }
+                
+            default: {
+                break;
+            }
         }
     }
 }
-
 
 
 - (void)didReceiveMemoryWarning {
