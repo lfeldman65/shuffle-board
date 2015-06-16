@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11316C741B2F84E30051A8AF /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11316C731B2F84E30051A8AF /* SettingsViewController.m */; };
+		11316C761B306E1F0051A8AF /* gamecenter.png in Resources */ = {isa = PBXBuildFile; fileRef = 11316C751B306E1F0051A8AF /* gamecenter.png */; };
+		11316C781B3070910051A8AF /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11316C771B3070910051A8AF /* iAd.framework */; };
+		11316C7A1B3075490051A8AF /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11316C791B3075490051A8AF /* GameKit.framework */; };
+		11316C7F1B3077250051A8AF /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 11316C7B1B3077250051A8AF /* Reachability.m */; };
+		11316C801B3077250051A8AF /* GameCenterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 11316C7D1B3077250051A8AF /* GameCenterManager.m */; };
+		11316C831B30772D0051A8AF /* NSDataAES256.m in Sources */ = {isa = PBXBuildFile; fileRef = 11316C811B30772D0051A8AF /* NSDataAES256.m */; };
 		117C65E51B20A82200117B25 /* gear.png in Resources */ = {isa = PBXBuildFile; fileRef = 117C65E41B20A82200117B25 /* gear.png */; };
 		118236651B13981B00F66E7E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 118236641B13981B00F66E7E /* main.m */; };
 		118236681B13981B00F66E7E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 118236671B13981B00F66E7E /* AppDelegate.m */; };
@@ -31,6 +38,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		11316C721B2F84E30051A8AF /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		11316C731B2F84E30051A8AF /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		11316C751B306E1F0051A8AF /* gamecenter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamecenter.png; sourceTree = "<group>"; };
+		11316C771B3070910051A8AF /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
+		11316C791B3075490051A8AF /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		11316C7B1B3077250051A8AF /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		11316C7C1B3077250051A8AF /* GameCenterManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterManager.h; sourceTree = "<group>"; };
+		11316C7D1B3077250051A8AF /* GameCenterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterManager.m; sourceTree = "<group>"; };
+		11316C7E1B3077250051A8AF /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		11316C811B30772D0051A8AF /* NSDataAES256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDataAES256.m; sourceTree = "<group>"; };
+		11316C821B30772D0051A8AF /* NSDataAES256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDataAES256.h; sourceTree = "<group>"; };
 		117C65E41B20A82200117B25 /* gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gear.png; sourceTree = "<group>"; };
 		1182365F1B13981B00F66E7E /* MiniGolf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniGolf.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		118236631B13981B00F66E7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -55,6 +73,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11316C7A1B3075490051A8AF /* GameKit.framework in Frameworks */,
+				11316C781B3070910051A8AF /* iAd.framework in Frameworks */,
 				1182368D1B13E5C100F66E7E /* CoreGraphics.framework in Frameworks */,
 				1182368B1B13E5B300F66E7E /* QuartzCore.framework in Frameworks */,
 			);
@@ -70,9 +90,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11316C841B3077330051A8AF /* Game Center */ = {
+			isa = PBXGroup;
+			children = (
+				11316C7E1B3077250051A8AF /* Reachability.h */,
+				11316C7B1B3077250051A8AF /* Reachability.m */,
+				11316C7C1B3077250051A8AF /* GameCenterManager.h */,
+				11316C7D1B3077250051A8AF /* GameCenterManager.m */,
+				11316C821B30772D0051A8AF /* NSDataAES256.h */,
+				11316C811B30772D0051A8AF /* NSDataAES256.m */,
+			);
+			name = "Game Center";
+			sourceTree = "<group>";
+		};
 		118236561B13981B00F66E7E = {
 			isa = PBXGroup;
 			children = (
+				11316C791B3075490051A8AF /* GameKit.framework */,
+				11316C771B3070910051A8AF /* iAd.framework */,
 				1182368C1B13E5C100F66E7E /* CoreGraphics.framework */,
 				1182368A1B13E5B300F66E7E /* QuartzCore.framework */,
 				118236611B13981B00F66E7E /* MiniGolf */,
@@ -97,10 +132,14 @@
 				118236671B13981B00F66E7E /* AppDelegate.m */,
 				118236691B13981B00F66E7E /* ViewController.h */,
 				1182366A1B13981B00F66E7E /* ViewController.m */,
+				11316C721B2F84E30051A8AF /* SettingsViewController.h */,
+				11316C731B2F84E30051A8AF /* SettingsViewController.m */,
 				1182366C1B13981B00F66E7E /* Main.storyboard */,
+				11316C841B3077330051A8AF /* Game Center */,
 				1182366F1B13981B00F66E7E /* Images.xcassets */,
 				118236711B13981B00F66E7E /* LaunchScreen.xib */,
 				117C65E41B20A82200117B25 /* gear.png */,
+				11316C751B306E1F0051A8AF /* gamecenter.png */,
 				118236621B13981B00F66E7E /* Supporting Files */,
 			);
 			path = MiniGolf;
@@ -182,6 +221,7 @@
 				TargetAttributes = {
 					1182365E1B13981B00F66E7E = {
 						CreatedOnToolsVersion = 6.3;
+						DevelopmentTeam = 9Y9N8HRKV2;
 					};
 					118236771B13981B00F66E7E = {
 						CreatedOnToolsVersion = 6.3;
@@ -217,6 +257,7 @@
 				117C65E51B20A82200117B25 /* gear.png in Resources */,
 				118236731B13981B00F66E7E /* LaunchScreen.xib in Resources */,
 				118236891B13B15400F66E7E /* ballputtdrill2.png in Resources */,
+				11316C761B306E1F0051A8AF /* gamecenter.png in Resources */,
 				118236701B13981B00F66E7E /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -237,7 +278,11 @@
 			files = (
 				1182366B1B13981B00F66E7E /* ViewController.m in Sources */,
 				118236681B13981B00F66E7E /* AppDelegate.m in Sources */,
+				11316C801B3077250051A8AF /* GameCenterManager.m in Sources */,
 				118236651B13981B00F66E7E /* main.m in Sources */,
+				11316C741B2F84E30051A8AF /* SettingsViewController.m in Sources */,
+				11316C831B30772D0051A8AF /* NSDataAES256.m in Sources */,
+				11316C7F1B3077250051A8AF /* Reachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,9 +410,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Larry Feldman (8C6C75PNJ8)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Larry Feldman (8C6C75PNJ8)";
 				INFOPLIST_FILE = MiniGolf/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "c95f1f0e-b3d3-4a17-999b-36c581c50a7f";
 			};
 			name = Debug;
 		};
@@ -375,9 +423,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				INFOPLIST_FILE = MiniGolf/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

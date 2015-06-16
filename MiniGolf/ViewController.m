@@ -14,12 +14,12 @@
 
 #import "ViewController.h"
 #define swipeIncrement .001
-#define speedScale 4
+//#define speedScale 4
 #define speedDamping .97
-#define centerScore 15
-#define ring1Score 2
-#define ring2Score 1
-#define maxShots 10
+#define centerScore 50
+#define ring1Score 10
+#define ring2Score -5
+#define maxShots 5
 
 @interface ViewController ()
 
@@ -60,12 +60,23 @@ float swipeTime;
     
     // 5*targetSize + 2*sidePadding + 4*padding = sWidth
     
+    int iAdHeight;
+    
     [super viewWillLayoutSubviews];
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        
+        iAdHeight = 66;
+    }
+    else {
+        
+        iAdHeight = 50;
+    }
     
     float sWidth = [UIScreen mainScreen].bounds.size.width;
     float sHeight = [UIScreen mainScreen].bounds.size.height;
-    float sidePadding = .16*sWidth;                                  // space between sides and targets
-    float padding = .08*sWidth;                                      // space between targets
+    float sidePadding = .08*sWidth;                                  // space between sides and targets
+    float padding = .11*sWidth;                                      // space between targets
     float targetSize = (sWidth - 2*sidePadding - 4*padding)/5;
     
     [self.bgImage setFrame:CGRectMake(0, 0, sWidth, sHeight)];
@@ -83,9 +94,15 @@ float swipeTime;
     self.shotLabel.center = CGPointMake(.65*[UIScreen mainScreen].bounds.size.width, .07*[UIScreen mainScreen].bounds.size.height);
     self.shotLabel.font = [UIFont fontWithName: @"Papyrus" size: .04*[UIScreen mainScreen].bounds.size.width];
     
+    [self.ngLabel setFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 75)];
+    self.ngLabel.center = CGPointMake(.5*[UIScreen mainScreen].bounds.size.width, .7*[UIScreen mainScreen].bounds.size.height);
+    self.ngLabel.font = [UIFont fontWithName: @"Papyrus" size: .04*[UIScreen mainScreen].bounds.size.width];
+    
     [self.settingsButton setFrame:CGRectMake(0, 0, .4*sWidth, .07*sHeight)];
     self.settingsButton.center = CGPointMake(.88*sWidth, 0.07*[UIScreen mainScreen].bounds.size.height);
     self.settingsButton.titleLabel.font = [UIFont fontWithName: @"Papyrus" size: .04*[UIScreen mainScreen].bounds.size.width];
+    
+    [self.iAdOutlet setFrame:CGRectMake(0, sHeight - iAdHeight, sWidth, iAdHeight)];
     
 
     float col1X = sidePadding;
@@ -135,22 +152,60 @@ float swipeTime;
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self newGame];
+    // Game Center
+    
+    [[GameCenterManager sharedManager] setDelegate:self];
+    BOOL available = [[GameCenterManager sharedManager] checkGameCenterAvailability];
+    if (available) {
+        NSLog(@"available");
+    } else {
+        NSLog(@"not available");
+    }
+    
+    [[GKLocalPlayer localPlayer] authenticateHandler];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bullz Eye!" message:nil delegate:self cancelButtonTitle:@"New Game" otherButtonTitles:nil];
+    alertView.tag = 2;
+  //  [alertView show];
+    self.ball.hidden = YES;
 
 }
 
+-(void)settingsDidFinish:(SettingsViewController *)controller {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([[segue identifier] isEqualToString:@"toSettings"]){
+        SettingsViewController *svc = (SettingsViewController *)[segue destinationViewController];
+        svc.delegate = self;
+    }
+    
+}
+
+
 - (IBAction)newGamePressed:(id)sender {
     
-   
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Game in Progress" message:@"Are you sure you want to start a new game?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Restart", nil];
-    alertView.tag = 1;
-    [alertView show];
-    
+    if (shots == 0 || shots == maxShots){
+        
+        [self newGame];
+        
+    } else {
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Game in Progress" message:@"Are you sure you want to start a new game?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Restart", nil];
+        alertView.tag = 1;
+        [alertView show];
+    }
 
 }
 
 - (void)newGame {
     
+    self.iAdOutlet.hidden = YES;
+    self.ngLabel.hidden = YES;
     self.ball.hidden = NO;
     score = 0;
     shots = 0;
@@ -172,58 +227,97 @@ float swipeTime;
     int sWidthInt = [UIScreen mainScreen].bounds.size.width - self.ball.frame.size.width;
     int xPosition = (arc4random() % sWidthInt) + self.ball.frame.size.width/2;
     
-    self.ball.center = CGPointMake(xPosition, .95*[UIScreen mainScreen].bounds.size.height);
-    
- //   self.ball.center = CGPointMake(self.image7.frame.origin.x, self.image7.frame.origin.y);
+    int yMax = .95*[UIScreen mainScreen].bounds.size.height;
+    int yMin = .75*[UIScreen mainScreen].bounds.size.height;
+    int yPosition = (arc4random() % (yMax - yMin)) + yMin;
+
+    self.ball.center = CGPointMake(xPosition, yPosition);
     
     if (shots >= maxShots) {
         
+        self.ngLabel.hidden = NO;
+
+        NSInteger best = [[NSUserDefaults standardUserDefaults] integerForKey:@"highScore"];
+        
+        if (score > best) {
+            
+          //  NSString *highScoreString = [NSString stringWithFormat:@"High Score: %ld", (long)score];
+         //   self.highScoreLabel.text = highScoreString;
+            
+            [[NSUserDefaults standardUserDefaults] setInteger:score forKey:@"highScore"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [[GameCenterManager sharedManager] saveAndReportScore:(int)score leaderboard:@"BullzHighScore" sortOrder:GameCenterSortOrderHighToLow];
+            
+        }
+        
+        if (score >=50 && score < 100) {
+            [[GameCenterManager sharedManager] saveAndReportAchievement:@"50blocks" percentComplete:100 shouldDisplayNotification:YES];
+        }
+        
+        if (score >= 100 && score < 250) {
+            [[GameCenterManager sharedManager] saveAndReportAchievement:@"100blocks" percentComplete:100 shouldDisplayNotification:YES];
+        }
+        
+        if (score >= 250) {
+            [[GameCenterManager sharedManager] saveAndReportAchievement:@"250blocks" percentComplete:100 shouldDisplayNotification:YES];
+        }
+        
+
+        self.iAdOutlet.hidden = NO;
         self.ball.hidden = YES;
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Game Over" message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+      /*  UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Game Over" message:nil delegate:self cancelButtonTitle:@"New Game" otherButtonTitles:nil];
         alertView.tag = 2;
-        [alertView show];
+        [alertView show];*/
     }
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
-    UITouch *touch = [touches anyObject];
-    [self.view setUserInteractionEnabled:NO];
-    self.firstPoint = [touch locationInView:self.view];
-    swipeTime = 0;
-    
-    self.overlapArray = [NSMutableArray arrayWithObjects:nil];
-    
-    for (int i = 0; i < 25; i++) {
+    if (shots < maxShots) {
         
-        [self.overlapArray addObject:@"false"];
+        UITouch *touch = [touches anyObject];
+        [self.view setUserInteractionEnabled:NO];
+        self.firstPoint = [touch locationInView:self.view];
+        swipeTime = 0;
         
+        self.overlapArray = [NSMutableArray arrayWithObjects:nil];
+        
+        for (int i = 0; i < 25; i++) {
+            
+            [self.overlapArray addObject:@"false"];
+            
+        }
+        self.swipeTimer = [NSTimer scheduledTimerWithTimeInterval:swipeIncrement target:self selector:@selector(swipeDuration) userInfo:nil repeats:YES];
     }
-    
-    self.swipeTimer = [NSTimer scheduledTimerWithTimeInterval:swipeIncrement target:self selector:@selector(swipeDuration) userInfo:nil repeats:YES];
-
 }
 
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     
+    NSInteger speed = [[NSUserDefaults standardUserDefaults] integerForKey:@"swipeSpeed"];
+    
     [self.swipeTimer invalidate];
     
-    NSLog(@"the timer stops at %f seconds", swipeTime);
+  //  NSLog(@"the timer stops at %f seconds", swipeTime);
 
     UITouch *touch = [touches anyObject];
     self.lastPoint = [touch locationInView:self.view];
     
     CGPoint tapVector = rwSub(self.lastPoint, self.firstPoint); // (vector) last point - first point
     
-    NSLog(@"tapVector = %f %f", tapVector.x, tapVector.y);
+  //  NSLog(@"tapVector = %f %f", tapVector.x, tapVector.y);
     
     self.shotVectorUnit = rwNormalize(tapVector);       // unit length 1
     
-    self.ballVelocityX = speedScale*self.shotVectorUnit.x/swipeTime;
-    self.ballVelocityY = speedScale*self.shotVectorUnit.y/swipeTime;
+    self.ballVelocityX = speed*self.shotVectorUnit.x/swipeTime;
+    self.ballVelocityY = speed*self.shotVectorUnit.y/swipeTime;
     
-    self.gameTimer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(moveBall) userInfo:nil repeats:YES];
+    if (shots < maxShots) {
+    
+        self.gameTimer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(moveBall) userInfo:nil repeats:YES];
+        
+    }
 
 }
 
@@ -624,5 +718,101 @@ float swipeTime;
     
 }
 
+# pragma mark - Game Center
+
+
+- (void)gameCenterManager:(GameCenterManager *)manager availabilityChanged:(NSDictionary *)availabilityInformation {
+    NSLog(@"GC Availabilty: %@", availabilityInformation);
+    if ([[availabilityInformation objectForKey:@"status"] isEqualToString:@"GameCenter Available"]) {
+        
+        NSLog(@"Game Center is online, the current player is logged in, and this app is setup.");
+        
+    } else {
+        
+        //   NSLog(@"error here1");
+    }
+    
+}
+
+- (void)gameCenterManager:(GameCenterManager *)manager error:(NSError *)error {
+    NSLog(@"GCM Error: %@", error);
+}
+
+- (void)gameCenterManager:(GameCenterManager *)manager reportedAchievement:(GKAchievement *)achievement withError:(NSError *)error {
+    if (!error) {
+        NSLog(@"GCM Reported Achievement: %@", achievement);
+    } else {
+        NSLog(@"GCM Error while reporting achievement: %@", error);
+    }
+}
+
+- (void)gameCenterManager:(GameCenterManager *)manager reportedScore:(GKScore *)score withError:(NSError *)error {
+    if (!error) {
+        NSLog(@"GCM Reported Score: %@", score);
+    } else {
+        NSLog(@"GCM Error while reporting score: %@", error);
+    }
+}
+
+- (void)gameCenterManager:(GameCenterManager *)manager didSaveScore:(GKScore *)score {
+    NSLog(@"Saved GCM Score with value: %lld", score.value);
+}
+
+- (void)gameCenterManager:(GameCenterManager *)manager didSaveAchievement:(GKAchievement *)achievement {
+    NSLog(@"Saved GCM Achievement: %@", achievement);
+}
+
+- (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    if (gameCenterViewController.viewState == GKGameCenterViewControllerStateAchievements) {
+        NSLog(@"Displayed GameCenter achievements.");
+    } else if (gameCenterViewController.viewState == GKGameCenterViewControllerStateLeaderboards) {
+        NSLog(@"Displayed GameCenter leaderboard.");
+    } else {
+        NSLog(@"Displayed GameCenter controller.");
+    }
+}
+
+-(void) showLeaderboard {
+    [[GameCenterManager sharedManager] presentLeaderboardsOnViewController:self];
+}
+
+- (void) loadChallenges {
+    // This feature is only supported in iOS 6 and higher (don't worry - GC Manager will check for you and return NIL if it isn't available)
+    [[GameCenterManager sharedManager] getChallengesWithCompletion:^(NSArray *challenges, NSError *error) {
+        NSLog(@"GC Challenges: %@ | Error: %@", challenges, error);
+    }];
+}
+
+- (void)gameCenterManager:(GameCenterManager *)manager authenticateUser:(UIViewController *)gameCenterLoginController {
+    [self presentViewController:gameCenterLoginController animated:YES completion:^{
+        NSLog(@"Finished Presenting Authentication Controller");
+    }];
+}
+
+
+#pragma mark - iAd
+
+-(void)bannerViewDidLoadAd:(ADBannerView *)banner {
+    
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:1];
+    [banner setAlpha:1];
+    [UIView commitAnimations];
+
+
+}
+
+-(void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error {
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:1];
+    [banner setAlpha:0];
+    [UIView commitAnimations];
+    
+}
+
 
 @end
+

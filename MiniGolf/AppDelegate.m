@@ -16,7 +16,16 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+  //  [[SKPaymentQueue defaultQueue]addTransactionObserver:self];
+    
+    [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                             [NSNumber numberWithBool:false], @"wasGameLaunched",
+                                                             [NSNumber numberWithInt:0], @"highScore",
+                                                             [NSNumber numberWithInt:0], @"numberGames",
+                                                             [NSNumber numberWithInt:5], @"swipeSpeed",
+                                                             [NSNumber numberWithBool:false], @"fullVersion",
+                                                             [NSNumber numberWithBool:true], @"isSoundOn",
+                                                             nil]];
     return YES;
 }
 

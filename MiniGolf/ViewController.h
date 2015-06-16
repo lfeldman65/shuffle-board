@@ -7,12 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-//#import <CoreMotion/CoreMotion.h>
-//#import <QuartzCore/QuartzCore.h>
 #import <Foundation/Foundation.h>
+#import "SettingsViewController.h"
 
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <SettingsDelegate, ADBannerViewDelegate, GameCenterManagerDelegate>
 
 @property (nonatomic) CGPoint firstPoint;
 @property (nonatomic) CGPoint lastPoint;
@@ -59,6 +58,10 @@
 
 @property (strong, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (strong, nonatomic) IBOutlet UILabel *shotLabel;
+@property (strong, nonatomic) IBOutlet UILabel *ngLabel;
+
+@property (weak, nonatomic) IBOutlet ADBannerView *iAdOutlet;
+
 
 @property (strong, nonatomic) NSMutableArray *overlapArray;
 

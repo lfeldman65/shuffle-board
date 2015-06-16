@@ -17,6 +17,13 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </imageView>
+                            <adBannerView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="16U-Zj-8tH" userLabel="iAd">
+                                <rect key="frame" x="0.0" y="518" width="320" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="0qZ-2A-W44"/>
+                                </connections>
+                            </adBannerView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="YeU-1s-AnJ" userLabel="1">
                                 <rect key="frame" x="16" y="59" width="36" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -143,7 +150,7 @@
                                 <color key="backgroundColor" red="1" green="0.18565216100000001" blue="0.037689089940000003" alpha="1" colorSpace="calibratedRGB"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ballputtdrill2.png" id="Nvq-7Q-miT" userLabel="ball">
-                                <rect key="frame" x="135" y="510" width="30" height="30"/>
+                                <rect key="frame" x="135" y="522" width="30" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score: 0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yol-gu-IRx">
@@ -179,15 +186,23 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="Flv-qV-FVg" kind="modal" id="cdD-vO-u7R"/>
+                                    <segue destination="Flv-qV-FVg" kind="modal" identifier="toSettings" id="cdD-vO-u7R"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap &quot;New Game&quot; above to start!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="DVX-HT-3oP">
+                                <rect key="frame" x="11" y="306" width="293" height="46"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
                         <outlet property="ball" destination="Nvq-7Q-miT" id="NWl-Xq-4nj"/>
                         <outlet property="bgImage" destination="VSR-JY-XMg" id="Hbp-SX-2Td"/>
+                        <outlet property="iAdOutlet" destination="16U-Zj-8tH" id="ftg-25-xiN"/>
                         <outlet property="image1" destination="YeU-1s-AnJ" id="dWB-fl-yzM"/>
                         <outlet property="image10" destination="2NF-CJ-TjQ" id="4EL-d6-qpM"/>
                         <outlet property="image11" destination="XZE-YE-dyB" id="UgE-4v-zQz"/>
@@ -213,6 +228,7 @@
                         <outlet property="image7" destination="gcj-yv-nwv" id="gaI-BS-OgJ"/>
                         <outlet property="image8" destination="OeN-NG-w11" id="Eru-OX-CxD"/>
                         <outlet property="image9" destination="sem-YZ-eGF" id="ek0-0s-5pl"/>
+                        <outlet property="ngLabel" destination="DVX-HT-3oP" id="LM2-2U-zeq"/>
                         <outlet property="scoreLabel" destination="yol-gu-IRx" id="5js-Tc-Xgk"/>
                         <outlet property="settingsButton" destination="uQ1-1t-agX" id="cC4-do-dJ0"/>
                         <outlet property="shotLabel" destination="shv-mf-q5R" id="kTO-nd-Jkb"/>
@@ -223,10 +239,10 @@
             </objects>
             <point key="canvasLocation" x="166" y="207"/>
         </scene>
-        <!--View Controller-->
+        <!--Settings View Controller-->
         <scene sceneID="cF8-nb-sNi">
             <objects>
-                <viewController id="Flv-qV-FVg" sceneMemberID="viewController">
+                <viewController id="Flv-qV-FVg" customClass="SettingsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mWe-xU-EJx">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -237,10 +253,66 @@
                                 <state key="normal" title="Back">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="backPressed:" destination="Flv-qV-FVg" eventType="touchUpInside" id="xgq-mQ-3kn"/>
+                                </connections>
                             </button>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" id="ody-wE-5NA">
+                                <rect key="frame" x="16" y="124" width="288" height="202"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <string key="text">This mash-up of shuffleboard and darts requires laser precision to rack up high scores.
+
+Swipe the puck to get it moving. The speed and direction of your swipe determine the speed and direction of the puck. Try to glide the puck to the center green square for maximum points! Yellow squares give you lesser points, but red squares will cost you!
+
+Your goal is to get the highest score possible with 10 tries. Compete on Game Center!</string>
+                                <color key="textColor" red="0.5" green="0.0" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="Dg8-PW-euH">
+                                <rect key="frame" x="255" y="20" width="51" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="onTintColor" red="0.5" green="0.0" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="soundSwitched:" destination="Flv-qV-FVg" eventType="valueChanged" id="0pL-0v-F7d"/>
+                                </connections>
+                            </switch>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="CzB-k1-cuU">
+                                <rect key="frame" x="39" y="379" width="242" height="72"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Game Center" backgroundImage="gamecenter.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="gameCenterPressed:" destination="Flv-qV-FVg" eventType="touchUpInside" id="7Mo-LT-GXG"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sounds" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="XUU-Ud-oTv">
+                                <rect key="frame" x="182" y="25" width="59" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.5" green="0.0" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <adBannerView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="bfo-og-31c" userLabel="iAd">
+                                <rect key="frame" x="0.0" y="518" width="320" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="fP5-zE-sem"/>
+                                </connections>
+                            </adBannerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="backButton" destination="ikx-YT-aD2" id="5XT-ed-SBr"/>
+                        <outlet property="gcButton" destination="CzB-k1-cuU" id="9ED-yg-6ff"/>
+                        <outlet property="iAdOutlet" destination="bfo-og-31c" id="1qF-a8-u6H"/>
+                        <outlet property="soundLabel" destination="XUU-Ud-oTv" id="UUC-Kr-B4Z"/>
+                        <outlet property="soundSwitch" destination="Dg8-PW-euH" id="pCV-Yj-jss"/>
+                        <outlet property="textView" destination="ody-wE-5NA" id="4Fv-Gw-16D"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nrc-y2-Qnv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -249,6 +321,7 @@
     </scenes>
     <resources>
         <image name="ballputtdrill2.png" width="114" height="114"/>
+        <image name="gamecenter.png" width="134" height="72"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
