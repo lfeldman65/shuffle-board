@@ -8,9 +8,10 @@
 
 #import "ViewController.h"
 #define swipeIncrement .001
-#define speedScale .15
+#define speedScale .20
 #define speedDamping .98
-#define maxShots 5
+#define maxShots 10
+#define tiltScale 1.8
 
 @interface ViewController ()
 
@@ -19,6 +20,9 @@
 
 int score;
 int shots;
+int totalShots;
+int currentStreak;
+int longestStreak;
 
 
 static inline CGPoint rwSub(CGPoint a, CGPoint b) {
@@ -67,7 +71,7 @@ bool miss;
     
     float sWidth = [UIScreen mainScreen].bounds.size.width;
     float sHeight = [UIScreen mainScreen].bounds.size.height;
-    float targetSize = .15*sWidth;
+    float targetSize = .18*sWidth;
     
     [self.bgImage setFrame:CGRectMake(0, 0, sWidth, sHeight)];
     self.bgImage.center = CGPointMake(.5*sWidth, .5*sHeight);
@@ -99,7 +103,7 @@ bool miss;
     [self.iAdOutlet setFrame:CGRectMake(0, sHeight - iAdHeight, sWidth, iAdHeight)];
     
     [self.image3 setFrame:CGRectMake(0, 0, targetSize, targetSize)];
-    self.image3.center = CGPointMake(.5*sWidth, .15*sHeight);
+    self.image3.center = CGPointMake(.5*sWidth, .18*sHeight);
     self.image3.layer.cornerRadius = .5*self.image3.layer.frame.size.height;
     self.image3.layer.masksToBounds = YES;
     
@@ -111,7 +115,7 @@ bool miss;
     
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"wasGameLaunched"]) {
         
-        NSString *infoString = @"Swipe the puck to get it moving. The length and direction of your swipe determine the speed and direction of the puck. Land on the green square for big points! Go to the Settings screen for complete instructions.";
+        NSString *infoString = @"It's a beautiful day on the links. Swipe the ball to get it moving. The length and direction of your swipe determine the speed and direction of the ball. The green can be slippery, so read the breaks carefully! Visit the Settings screen for complete instructions.";
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bullz Eye" message:infoString delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
@@ -178,6 +182,8 @@ bool miss;
     
     if ([[notification name] isEqualToString:@"soundDidChange"]) {
         
+        NSLog(@"sound changed");
+        
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"isSoundOn"]) {
             
             [self.backgroundSound prepareToPlay];
@@ -203,11 +209,11 @@ bool miss;
 
 -(void)addTilt {
     
-    int minTilt = -10;
-    int maxTilt = 10;
+    int minTilt = -9;
+    int maxTilt = 9;
     NSString *tiltString;
     
-    self.tiltSpeed = (arc4random() % (maxTilt - minTilt)) + minTilt;
+    self.tiltSpeed = (arc4random() % (maxTilt - minTilt + 1)) + minTilt;
 
     self.leftTilt.hidden = YES;
     self.rightTilt.hidden = YES;
@@ -232,7 +238,7 @@ bool miss;
 
 - (IBAction)newGamePressed:(id)sender {
     
-    if (shots == 0 || shots == maxShots){
+    if (shots == 0 || shots == totalShots){
         
         [self newGame];
         
@@ -251,9 +257,12 @@ bool miss;
     self.ball.hidden = NO;
     score = 0;
     shots = 0;
+    totalShots = maxShots;
+    currentStreak = 0;
+    longestStreak = 0;
     
     self.scoreLabel.text = @"Score: 0";
-    self.shotLabel.text = @"Shots: 0";
+    self.shotLabel.text = @"Putt: 0/10";
     [self placeBall];
     
 }
@@ -278,7 +287,7 @@ bool miss;
 
     self.ball.center = CGPointMake(.5*sWidthInt, .85*sHeightInt);
     
-    if (shots >= maxShots) {
+    if (shots >= totalShots) {
         
         [self endGame];
     }
@@ -287,7 +296,7 @@ bool miss;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
-    if (shots < maxShots) {
+    if (shots < totalShots) {
         
         UITouch *touch = [touches anyObject];
         [self.view setUserInteractionEnabled:NO];
@@ -325,7 +334,7 @@ bool miss;
     self.ballVelocityX = speedScale*tapVector.x;
     self.ballVelocityY = speedScale*tapVector.y;
     
-    if (shots < maxShots) {
+    if (shots < totalShots) {
     
         self.gameTimer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(moveBall) userInfo:nil repeats:YES];
         
@@ -346,25 +355,42 @@ bool miss;
     self.ballVelocityY = speedDamping*self.ballVelocityY;
     
   //  NSLog(@"velocity = %f", self.ballVelocityY);
-
-    self.ball.center = CGPointMake(self.ball.center.x + self.ballVelocityX + self.tiltSpeed, self.ball.center.y + self.ballVelocityY);
     
-    if (CGRectIntersectsRect(self.ball.frame, self.image3.frame)) {
+ //   self.tiltSpeed = 0;
+
+    self.ball.center = CGPointMake(self.ball.center.x + self.ballVelocityX + tiltScale*self.tiltSpeed, self.ball.center.y + self.ballVelocityY);
+    
+  //  if (CGRectIntersectsRect(self.ball.frame, self.image3.frame)) {
+    if ((fabs(self.ball.center.x - self.image3.center.x) < .6*self.image3.frame.size.width) && (fabs(self.ball.center.y - self.image3.center.y) < .2*self.image3.frame.size.width)) {
         
         if(fabs(self.ballVelocityX) < 18 && fabs(self.ballVelocityY) < 18 && miss==false) {
 
             [self.gameTimer invalidate];
             shots++;
-            NSString *shotString = [NSString stringWithFormat:@"Shots: %i", shots];
+            totalShots++;
+            NSString *shotString = [NSString stringWithFormat:@"Putt: %i/%i", shots, totalShots];
             self.shotLabel.text = shotString;
             
             [self.view setUserInteractionEnabled:YES];
             
             score++;
+            currentStreak++;
+            
+            if (currentStreak > longestStreak) {
+                
+                longestStreak = currentStreak;
+            }
+            
+            
             NSString *scoreString = [NSString stringWithFormat:@"Score: %i", score];
             self.scoreLabel.text = scoreString;
-          //  self.ball.hidden = YES;
-            [self.greenSound play];
+           
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"isSoundOn"]) {
+                
+                [self.greenSound play];
+
+            }
+            
             self.ball.center = CGPointMake(self.image3.center.x, self.image3.center.y);
             self.ball.alpha = 0.2;
             
@@ -373,15 +399,21 @@ bool miss;
         } else {
             
             miss = true;
-            [self.redSound play];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"isSoundOn"]) {
+                
+                [self.redSound play];
+                currentStreak = 0;
+                
+            }
         }
         
     } else if(fabs(self.ballVelocityX) < 5 && fabs(self.ballVelocityY) < 5) {
             
         [self.gameTimer invalidate];
         shots++;
+        currentStreak = 0;
         [self.gameTimer invalidate];
-        NSString *shotString = [NSString stringWithFormat:@"Shots: %i", shots];
+        NSString *shotString = [NSString stringWithFormat:@"Putt: %i/%i", shots, totalShots];
         self.shotLabel.text = shotString;
         
         [self.view setUserInteractionEnabled:YES];
@@ -392,8 +424,9 @@ bool miss;
         
         [self.gameTimer invalidate];
         shots++;
+        currentStreak = 0;
         [self.gameTimer invalidate];
-        NSString *shotString = [NSString stringWithFormat:@"Shots: %i", shots];
+        NSString *shotString = [NSString stringWithFormat:@"Putt: %i/%i", shots, totalShots];
         self.shotLabel.text = shotString;
         
         [self.view setUserInteractionEnabled:YES];
@@ -446,9 +479,19 @@ bool miss;
     self.ngLabel.hidden = NO;
     self.tiltLabel.hidden = YES;
     
-    NSInteger best = [[NSUserDefaults standardUserDefaults] integerForKey:@"highScore"];
+    NSLog(@"longest streak = %d", longestStreak);
     
-    [self.slideSound play];
+    NSInteger best = [[NSUserDefaults standardUserDefaults] integerForKey:@"highScore"];
+    NSInteger streak = [[NSUserDefaults standardUserDefaults] integerForKey:@"longestStreak"];
+
+    if (longestStreak > streak) {
+        
+        [[NSUserDefaults standardUserDefaults] setInteger:longestStreak forKey:@"longestStreak"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        [[GameCenterManager sharedManager] saveAndReportScore:(int)longestStreak leaderboard:@"LongestStreak" sortOrder:GameCenterSortOrderHighToLow];
+        
+    }
     
     if (score > best) {
         
@@ -459,16 +502,27 @@ bool miss;
         
     }
     
-    if (score >= 300 && score < 400) {
-        [[GameCenterManager sharedManager] saveAndReportAchievement:@"300points" percentComplete:100 shouldDisplayNotification:YES];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"isSoundOn"]) {
+        
+        [self.slideSound play];
+        
+    }
+
+    
+    if (score >= 10 && score < 20) {
+        [[GameCenterManager sharedManager] saveAndReportAchievement:@"bullz1" percentComplete:100 shouldDisplayNotification:YES];
     }
     
-    if (score >= 400 && score < 500) {
-        [[GameCenterManager sharedManager] saveAndReportAchievement:@"400points" percentComplete:100 shouldDisplayNotification:YES];
+    if (score >= 20) {
+        [[GameCenterManager sharedManager] saveAndReportAchievement:@"bullz2" percentComplete:100 shouldDisplayNotification:YES];
     }
     
-    if (score >= 500) {
-        [[GameCenterManager sharedManager] saveAndReportAchievement:@"perfectGame" percentComplete:100 shouldDisplayNotification:YES];
+    if (longestStreak >= 5 && longestStreak < 10) {
+        [[GameCenterManager sharedManager] saveAndReportAchievement:@"bullz3" percentComplete:100 shouldDisplayNotification:YES];
+    }
+    
+    if (longestStreak >= 10) {
+        [[GameCenterManager sharedManager] saveAndReportAchievement:@"bullz4" percentComplete:100 shouldDisplayNotification:YES];
     }
     
     

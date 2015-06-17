@@ -16,6 +16,8 @@
 @property (weak, nonatomic) IBOutlet UISwitch *soundSwitch;
 @property (weak, nonatomic) IBOutlet UIButton *gcButton;
 @property (strong, nonatomic) IBOutlet UILabel *highScoreLabel;
+@property (strong, nonatomic) IBOutlet UIImageView *backImage;
+
 
 - (IBAction)soundSwitched:(id)sender;
 - (IBAction)gameCenterPressed:(id)sender;
@@ -31,6 +33,9 @@
     float sWidth = [UIScreen mainScreen].bounds.size.width;
     float sHeight = [UIScreen mainScreen].bounds.size.height;
     
+    [self.backImage setFrame:CGRectMake(0, 0, sWidth, sHeight)];
+    self.backImage.center = CGPointMake(.5*sWidth, .5*sHeight);
+
     [self.backButton setFrame:CGRectMake(0, 0, .3*sWidth, .1*sHeight)];
     self.backButton.center = CGPointMake(.11*sWidth, .11*sHeight);
     self.backButton.titleLabel.font = [UIFont fontWithName: @"Marker Felt" size: .06*sWidth];
@@ -53,7 +58,7 @@
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         
-        self.textView.font = [UIFont fontWithName: @"Marker Felt" size: .04*sWidth];
+        self.textView.font = [UIFont fontWithName: @"Marker Felt" size: .053*sWidth];
         self.textView.center = CGPointMake(.5*sWidth, .48*sHeight);
         
     }
@@ -61,22 +66,22 @@
         
         if(sHeight==480) {
             
-            self.textView.font = [UIFont fontWithName: @"Marker Felt" size: .043*sWidth];
+            self.textView.font = [UIFont fontWithName: @"Marker Felt" size: .05*sWidth];
             self.textView.center = CGPointMake(.5*sWidth, .46*sHeight);
             
         } else {
             
-            self.textView.font = [UIFont fontWithName: @"Marker Felt" size: .05*sWidth];
+            self.textView.font = [UIFont fontWithName: @"Marker Felt" size: .06*sWidth];
             self.textView.center = CGPointMake(.5*sWidth, .46*sHeight);
         }
     }
     
     [self.highScoreLabel setFrame:CGRectMake(0, 0, .9*sWidth, 75)];
-    self.highScoreLabel.center = CGPointMake(.5*sWidth, .7*sHeight);
+    self.highScoreLabel.center = CGPointMake(.5*sWidth, .75*sHeight);
     [[self highScoreLabel] setFont:[UIFont fontWithName:@"Marker Felt" size:.06*sWidth]];
     
     [self.gcButton setFrame:CGRectMake(0, 0, sWidth/2, .1*sHeight)];
-    self.gcButton.center = CGPointMake(sWidth/2, .83*sHeight);
+    self.gcButton.center = CGPointMake(sWidth/2, .88*sHeight);
     [self.gcButton.titleLabel setFont:[UIFont systemFontOfSize:.06*sWidth]];
     self.gcButton.layer.cornerRadius = .3*self.gcButton.layer.frame.size.height;
     self.gcButton.layer.masksToBounds = YES;

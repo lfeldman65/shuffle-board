@@ -22,6 +22,7 @@
                                                              [NSNumber numberWithBool:false], @"wasGameLaunched",
                                                              [NSNumber numberWithInt:0], @"highScore",
                                                              [NSNumber numberWithInt:0], @"numberGames",
+                                                             [NSNumber numberWithInt:0], @"longestStreak",
                                                              [NSNumber numberWithBool:false], @"fullVersion",
                                                              [NSNumber numberWithBool:true], @"isSoundOn",
                                                              nil]];
