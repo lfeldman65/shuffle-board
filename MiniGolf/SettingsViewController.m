@@ -28,8 +28,6 @@
 {
     [super viewWillLayoutSubviews];
     
-    int iAdHeight;
-    
     float sWidth = [UIScreen mainScreen].bounds.size.width;
     float sHeight = [UIScreen mainScreen].bounds.size.height;
     
@@ -92,17 +90,6 @@
         
         self.soundSwitch.on = false;
     }
-    
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        
-        iAdHeight = 66;
-    }
-    else {
-        
-        iAdHeight = 50;
-    }
-    
-    [self.iAdOutlet setFrame:CGRectMake(0, sHeight - iAdHeight, sWidth, iAdHeight)];
 
 }
 

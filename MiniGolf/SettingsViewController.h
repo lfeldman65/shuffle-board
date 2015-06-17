@@ -17,7 +17,6 @@
 
 
 
-
 @class SettingsViewController;
 
 @protocol SettingsDelegate
@@ -29,7 +28,6 @@
 
 @interface SettingsViewController : UIViewController <ADBannerViewDelegate>
 
-@property (weak, nonatomic) IBOutlet ADBannerView *iAdOutlet;
 
 @property (weak, nonatomic) id <SettingsDelegate> delegate;
 

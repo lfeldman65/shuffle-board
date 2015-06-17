@@ -20,6 +20,7 @@
 		11666BC11B30B6D300207727 /* birds2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 11666BC01B30B6D300207727 /* birds2.mp3 */; };
 		11666BC41B30BDB200207727 /* puckiPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 11666BC21B30BDB200207727 /* puckiPhone.png */; };
 		11666BC51B30BDB200207727 /* puckiPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 11666BC31B30BDB200207727 /* puckiPad.png */; };
+		11666BC91B3137C200207727 /* cup.wav in Resources */ = {isa = PBXBuildFile; fileRef = 11666BC81B3137C200207727 /* cup.wav */; };
 		117C65E51B20A82200117B25 /* gear.png in Resources */ = {isa = PBXBuildFile; fileRef = 117C65E41B20A82200117B25 /* gear.png */; };
 		118236651B13981B00F66E7E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 118236641B13981B00F66E7E /* main.m */; };
 		118236681B13981B00F66E7E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 118236671B13981B00F66E7E /* AppDelegate.m */; };
@@ -61,6 +62,7 @@
 		11666BC01B30B6D300207727 /* birds2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = birds2.mp3; sourceTree = "<group>"; };
 		11666BC21B30BDB200207727 /* puckiPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = puckiPhone.png; sourceTree = "<group>"; };
 		11666BC31B30BDB200207727 /* puckiPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = puckiPad.png; sourceTree = "<group>"; };
+		11666BC81B3137C200207727 /* cup.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = cup.wav; sourceTree = "<group>"; };
 		117C65E41B20A82200117B25 /* gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gear.png; sourceTree = "<group>"; };
 		1182365F1B13981B00F66E7E /* MiniGolf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniGolf.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		118236631B13981B00F66E7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 		11666BC61B30D1AF00207727 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				11666BC81B3137C200207727 /* cup.wav */,
 				11666BBE1B30B57900207727 /* slide.mp3 */,
 				11666BC01B30B6D300207727 /* birds2.mp3 */,
 				11666BB81B30AB6600207727 /* applause.mp3 */,
@@ -297,6 +300,7 @@
 				11666BB71B30AA9D00207727 /* ohh.mp3 in Resources */,
 				118236891B13B15400F66E7E /* ballputtdrill2.png in Resources */,
 				11666BB91B30AB6700207727 /* applause.mp3 in Resources */,
+				11666BC91B3137C200207727 /* cup.wav in Resources */,
 				11316C761B306E1F0051A8AF /* gamecenter.png in Resources */,
 				118236701B13981B00F66E7E /* Images.xcassets in Resources */,
 			);

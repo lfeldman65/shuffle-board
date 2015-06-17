@@ -8,13 +8,9 @@
 
 #import "ViewController.h"
 #define swipeIncrement .001
-#define speedScale .2
-#define speedDamping .95
-#define centerScore 50
-#define ring1Score 10
-#define ring2Score -5
-#define maxShots 10
-#define numTargets 25
+#define speedScale .15
+#define speedDamping .98
+#define maxShots 5
 
 @interface ViewController ()
 
@@ -23,7 +19,6 @@
 
 int score;
 int shots;
-float sliderValue;
 
 
 static inline CGPoint rwSub(CGPoint a, CGPoint b) {
@@ -53,10 +48,9 @@ static inline CGPoint rwNormalize(CGPoint a) {
 @synthesize ball;
 
 float swipeTime;
+bool miss;
 
 - (void)viewWillLayoutSubviews {
-    
-    // 5*targetSize + 2*sidePadding + 4*padding = sWidth
     
     int iAdHeight;
     
@@ -73,9 +67,7 @@ float swipeTime;
     
     float sWidth = [UIScreen mainScreen].bounds.size.width;
     float sHeight = [UIScreen mainScreen].bounds.size.height;
-    float sidePadding = .08*sWidth;                                  // space between sides and targets
-    float padding = .11*sWidth;                                      // space between targets
-    float targetSize = (sWidth - 2*sidePadding - 4*padding)/5;
+    float targetSize = .15*sWidth;
     
     [self.bgImage setFrame:CGRectMake(0, 0, sWidth, sHeight)];
     self.bgImage.center = CGPointMake(.5*sWidth, .5*sHeight);
@@ -94,67 +86,22 @@ float swipeTime;
     
     [self.ngLabel setFrame:CGRectMake(0, 0, sWidth, 75)];
     self.ngLabel.font = [UIFont fontWithName: @"Marker Felt" size: .05*sWidth];
+    self.ngLabel.center = CGPointMake(.5*sWidth, .5*sHeight);
     
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        
-         self.ngLabel.center = CGPointMake(.5*sWidth, .85*sHeight);
-        
-    }
-    else {
-        
-         self.ngLabel.center = CGPointMake(.5*sWidth, .78*sHeight);
-        
-    }
+    [self.tiltLabel setFrame:CGRectMake(0, 0, sWidth, 75)];
+    self.tiltLabel.font = [UIFont fontWithName: @"Marker Felt" size: .05*sWidth];
+    self.tiltLabel.center = CGPointMake(.5*sWidth, .5*sHeight);
 
-    
     [self.settingsButton setFrame:CGRectMake(0, 0, .4*sWidth, .07*sHeight)];
     self.settingsButton.center = CGPointMake(.88*sWidth, 0.07*[UIScreen mainScreen].bounds.size.height);
     self.settingsButton.titleLabel.font = [UIFont fontWithName: @"Marker Felt" size: .04*sWidth];
     
     [self.iAdOutlet setFrame:CGRectMake(0, sHeight - iAdHeight, sWidth, iAdHeight)];
     
-
-    float col1X = sidePadding;
-    float col2X = col1X + padding + targetSize;
-    float col3X = col2X + padding + targetSize;
-    float col4X = col3X + padding + targetSize;
-    float col5X = col4X + padding + targetSize;
-    
-    float row1Y = .12*sHeight;
-    float row2Y = row1Y + padding + targetSize;
-    float row3Y = row2Y + padding + targetSize;
-    float row4Y = row3Y + padding + targetSize;
-    float row5Y = row4Y + padding + targetSize;
-    
-    [self.image1 setFrame:CGRectMake(col1X, row1Y, targetSize, targetSize)];
-    [self.image2 setFrame:CGRectMake(col2X, row1Y, targetSize, targetSize)];
-    [self.image3 setFrame:CGRectMake(col3X, row1Y, targetSize, targetSize)];
-    [self.image4 setFrame:CGRectMake(col4X, row1Y, targetSize, targetSize)];
-    [self.image5 setFrame:CGRectMake(col5X, row1Y, targetSize, targetSize)];
-    
-    [self.image6 setFrame:CGRectMake(col1X, row2Y, targetSize, targetSize)];
-    [self.image7 setFrame:CGRectMake(col2X, row2Y, targetSize, targetSize)];
-    [self.image8 setFrame:CGRectMake(col3X, row2Y, targetSize, targetSize)];
-    [self.image9 setFrame:CGRectMake(col4X, row2Y, targetSize, targetSize)];
-    [self.image10 setFrame:CGRectMake(col5X, row2Y, targetSize, targetSize)];
-    
-    [self.image11 setFrame:CGRectMake(col1X, row3Y, targetSize, targetSize)];
-    [self.image12 setFrame:CGRectMake(col2X, row3Y, targetSize, targetSize)];
-    [self.image13 setFrame:CGRectMake(col3X, row3Y, targetSize, targetSize)];
-    [self.image14 setFrame:CGRectMake(col4X, row3Y, targetSize, targetSize)];
-    [self.image15 setFrame:CGRectMake(col5X, row3Y, targetSize, targetSize)];
-    
-    [self.image16 setFrame:CGRectMake(col1X, row4Y, targetSize, targetSize)];
-    [self.image17 setFrame:CGRectMake(col2X, row4Y, targetSize, targetSize)];
-    [self.image18 setFrame:CGRectMake(col3X, row4Y, targetSize, targetSize)];
-    [self.image19 setFrame:CGRectMake(col4X, row4Y, targetSize, targetSize)];
-    [self.image20 setFrame:CGRectMake(col5X, row4Y, targetSize, targetSize)];
-    
-    [self.image21 setFrame:CGRectMake(col1X, row5Y, targetSize, targetSize)];
-    [self.image22 setFrame:CGRectMake(col2X, row5Y, targetSize, targetSize)];
-    [self.image23 setFrame:CGRectMake(col3X, row5Y, targetSize, targetSize)];
-    [self.image24 setFrame:CGRectMake(col4X, row5Y, targetSize, targetSize)];
-    [self.image25 setFrame:CGRectMake(col5X, row5Y, targetSize, targetSize)];
+    [self.image3 setFrame:CGRectMake(0, 0, targetSize, targetSize)];
+    self.image3.center = CGPointMake(.5*sWidth, .15*sHeight);
+    self.image3.layer.cornerRadius = .5*self.image3.layer.frame.size.height;
+    self.image3.layer.masksToBounds = YES;
     
 }
 
@@ -175,12 +122,12 @@ float swipeTime;
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         
-        [self.ball setFrame:CGRectMake(0, 0, 40, 40)];
+        [self.ball setFrame:CGRectMake(0, 0, 80, 80)];
         
     }
     else {
         
-        [self.ball setFrame:CGRectMake(0, 0, 20, 20)];
+        [self.ball setFrame:CGRectMake(0, 0, 40, 40)];
         
     }
     
@@ -195,9 +142,6 @@ float swipeTime;
     }
     
     [[GKLocalPlayer localPlayer] authenticateHandler];
-  /*  UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bullz Eye!" message:nil delegate:self cancelButtonTitle:@"New Game" otherButtonTitles:nil];
-    alertView.tag = 2;
-    [alertView show];*/
     
     self.ball.hidden = YES;
     
@@ -209,10 +153,10 @@ float swipeTime;
     self.redSound = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle]pathForResource:@"ohh"ofType:@"mp3"]] error:NULL];
     [self.redSound prepareToPlay];
     
-    self.greenSound = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle]pathForResource:@"applause"ofType:@"mp3"]] error:NULL];
+    self.greenSound = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle]pathForResource:@"cup"ofType:@"wav"]] error:NULL];
     [self.greenSound prepareToPlay];
     
-     self.slideSound = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle]pathForResource:@"slide"ofType:@"mp3"]] error:NULL];
+     self.slideSound = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle]pathForResource:@"applause"ofType:@"mp3"]] error:NULL];
     [self.slideSound prepareToPlay];
     
     self.backgroundSound = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle]pathForResource:@"birds2"ofType:@"mp3"]] error:NULL];
@@ -257,6 +201,34 @@ float swipeTime;
     
 }
 
+-(void)addTilt {
+    
+    int minTilt = -10;
+    int maxTilt = 10;
+    NSString *tiltString;
+    
+    self.tiltSpeed = (arc4random() % (maxTilt - minTilt)) + minTilt;
+
+    self.leftTilt.hidden = YES;
+    self.rightTilt.hidden = YES;
+    
+    if(self.tiltSpeed == 0) {
+        tiltString = [NSString stringWithFormat:@"Flat"];
+    }
+    
+    if(self.tiltSpeed > 0) {
+        tiltString = [NSString stringWithFormat:@"%d inches right", self.tiltSpeed];
+        self.rightTilt.hidden = NO;
+    }
+    
+    if(self.tiltSpeed < 0) {
+        tiltString = [NSString stringWithFormat:@"%d inches left", -self.tiltSpeed];
+        self.leftTilt.hidden = NO;
+    }
+    
+    self.tiltLabel.text = tiltString;
+}
+
 
 - (IBAction)newGamePressed:(id)sender {
     
@@ -275,7 +247,6 @@ float swipeTime;
 
 - (void)newGame {
     
-    self.iAdOutlet.hidden = YES;
     self.ngLabel.hidden = YES;
     self.ball.hidden = NO;
     score = 0;
@@ -289,55 +260,29 @@ float swipeTime;
 
 -(void)placeBall {
     
+    miss = false;
+    self.tiltLabel.hidden = NO;
+    self.ball.hidden = NO;
+    self.ball.alpha = 1.0;
+    
     if (self.placeBallTimer.isValid) {
         [self.placeBallTimer invalidate];
     }
     
+    [self addTilt];
+    
     [self.view setUserInteractionEnabled:YES];
     
-    int sWidthInt = [UIScreen mainScreen].bounds.size.width - self.ball.frame.size.width;
-    int xPosition = (arc4random() % sWidthInt) + self.ball.frame.size.width/2;
-    
-    int yMax = .97*[UIScreen mainScreen].bounds.size.height;
-    int yMin = .78*[UIScreen mainScreen].bounds.size.height;
-    int yPosition = (arc4random() % (yMax - yMin)) + yMin;
+    int sWidthInt = [UIScreen mainScreen].bounds.size.width;
+    int sHeightInt = [UIScreen mainScreen].bounds.size.height;
 
-    self.ball.center = CGPointMake(xPosition, yPosition);
+    self.ball.center = CGPointMake(.5*sWidthInt, .85*sHeightInt);
     
     if (shots >= maxShots) {
         
-        self.ngLabel.hidden = NO;
-
-        NSInteger best = [[NSUserDefaults standardUserDefaults] integerForKey:@"highScore"];
-        
-        if (score > best) {
-            
-            [[NSUserDefaults standardUserDefaults] setInteger:score forKey:@"highScore"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            [[GameCenterManager sharedManager] saveAndReportScore:(int)score leaderboard:@"HighScore" sortOrder:GameCenterSortOrderHighToLow];
-            
-        }
-        
-        if (score >= 300 && score < 400) {
-            [[GameCenterManager sharedManager] saveAndReportAchievement:@"300points" percentComplete:100 shouldDisplayNotification:YES];
-        }
-        
-        if (score >= 400 && score < 500) {
-            [[GameCenterManager sharedManager] saveAndReportAchievement:@"400points" percentComplete:100 shouldDisplayNotification:YES];
-        }
-        
-        if (score >= 500) {
-            [[GameCenterManager sharedManager] saveAndReportAchievement:@"perfectGame" percentComplete:100 shouldDisplayNotification:YES];
-        }
-        
-
-        self.iAdOutlet.hidden = NO;
-        self.ball.hidden = YES;
-      /*  UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Game Over" message:nil delegate:self cancelButtonTitle:@"New Game" otherButtonTitles:nil];
-        alertView.tag = 2;
-        [alertView show];*/
+        [self endGame];
     }
+        
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -349,13 +294,13 @@ float swipeTime;
         self.firstPoint = [touch locationInView:self.view];
         swipeTime = 0;
         
-        self.overlapArray = [NSMutableArray arrayWithObjects:nil];
+    /*    self.overlapArray = [NSMutableArray arrayWithObjects:nil];
         
         for (int i = 0; i < numTargets; i++) {
             
             [self.overlapArray addObject:@"false"];
             
-        }
+        }*/
     //    self.swipeTimer = [NSTimer scheduledTimerWithTimeInterval:swipeIncrement target:self selector:@selector(swipeDuration) userInfo:nil repeats:YES];
     }
 }
@@ -363,7 +308,6 @@ float swipeTime;
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     
- //   NSInteger speed = [[NSUserDefaults standardUserDefaults] integerForKey:@"swipeSpeed"];
     
     [self.swipeTimer invalidate];
     
@@ -391,408 +335,71 @@ float swipeTime;
 
 - (void)swipeDuration {
     
-    swipeTime = swipeTime + swipeIncrement;
+ //   swipeTime = swipeTime + swipeIncrement;
     
 }
 
 
 -(void)moveBall {
     
-    self.ballVelocityX = speedDamping*self.ballVelocityX;
+    self.ballVelocityX = speedDamping*(self.ballVelocityX);
     self.ballVelocityY = speedDamping*self.ballVelocityY;
-
-    self.ball.center = CGPointMake(self.ball.center.x + self.ballVelocityX, self.ball.center.y + self.ballVelocityY);
     
-    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-        [self.slideSound play];
-    }
-    
-    if(fabs(self.ballVelocityX) < 5 && fabs(self.ballVelocityY) < 5) {
-        
-        [self.slideSound stop];
-        [self.gameTimer invalidate];
-        [self checkOverlap];
+  //  NSLog(@"velocity = %f", self.ballVelocityY);
 
-    }
-}
-
-
-- (void)checkOverlap {
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image1.frame)) {
-        
-        self.overlapArray[0] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image2.frame)) {
-        
-        self.overlapArray[1] = @"true";
-        
-    }
+    self.ball.center = CGPointMake(self.ball.center.x + self.ballVelocityX + self.tiltSpeed, self.ball.center.y + self.ballVelocityY);
     
     if (CGRectIntersectsRect(self.ball.frame, self.image3.frame)) {
         
-        self.overlapArray[2] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image4.frame)) {
-        
-        self.overlapArray[3] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image5.frame)) {
-        
-        self.overlapArray[4] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image6.frame)) {
-        
-        self.overlapArray[5] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image7.frame)) {
-        
-        self.overlapArray[6] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image8.frame)) {
-        
-        self.overlapArray[7] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image9.frame)) {
-        
-        self.overlapArray[8] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image10.frame)) {
-        
-        self.overlapArray[9] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image11.frame)) {
-        
-        self.overlapArray[10] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image12.frame)) {
-        
-        self.overlapArray[11] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image13.frame)) {
-        
-        self.overlapArray[12] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image14.frame)) {
-        
-        self.overlapArray[13] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image15.frame)) {
-        
-        self.overlapArray[14] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image16.frame)) {
-        
-        self.overlapArray[15] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image17.frame)) {
-        
-        self.overlapArray[16] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image18.frame)) {
-        
-        self.overlapArray[17] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image19.frame)) {
-        
-        self.overlapArray[18] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image20.frame)) {
-        
-        self.overlapArray[19] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image21.frame)) {
-        
-        self.overlapArray[20] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image22.frame)) {
-        
-        self.overlapArray[21] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image23.frame)) {
-        
-        self.overlapArray[22] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image24.frame)) {
-        
-        self.overlapArray[23] = @"true";
-        
-    }
-    
-    if (CGRectIntersectsRect(self.ball.frame, self.image25.frame)) {
-        
-        self.overlapArray[24] = @"true";
-        
-    }
-    
-   // NSLog(@"overlap = %@", self.overlapArray);
+        if(fabs(self.ballVelocityX) < 18 && fabs(self.ballVelocityY) < 18 && miss==false) {
 
-    [self getScore];
-    
-}
-
-- (void)getScore {
-    
-
-    shots++;
-    
-    
-    if ([self.overlapArray[0] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-    }
-    
-    if ([self.overlapArray[1] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[2] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[3] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[4] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[5] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[6] isEqualToString:@"true"]) {
-        
-        score = score + ring1Score;
-        
-    }
-    
-    if ([self.overlapArray[7] isEqualToString:@"true"]) {
-        
-        score = score + ring1Score;
-        
-    }
-    
-    if ([self.overlapArray[8] isEqualToString:@"true"]) {
-        
-        score = score + ring1Score;
-        
-    }
-    
-    if ([self.overlapArray[9] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[10] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[11] isEqualToString:@"true"]) {
-        
-        score = score + ring1Score;
-        
-    }
-    
-    if ([self.overlapArray[12] isEqualToString:@"true"]) {
-        
-        score = score + centerScore;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
+            [self.gameTimer invalidate];
+            shots++;
+            NSString *shotString = [NSString stringWithFormat:@"Shots: %i", shots];
+            self.shotLabel.text = shotString;
+            
+            [self.view setUserInteractionEnabled:YES];
+            
+            score++;
+            NSString *scoreString = [NSString stringWithFormat:@"Score: %i", score];
+            self.scoreLabel.text = scoreString;
+          //  self.ball.hidden = YES;
             [self.greenSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[13] isEqualToString:@"true"]) {
-        
-        score = score + ring1Score;
-        
-    }
-    
-    if ([self.overlapArray[14] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
+            self.ball.center = CGPointMake(self.image3.center.x, self.image3.center.y);
+            self.ball.alpha = 0.2;
+            
+            self.placeBallTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(placeBall) userInfo:nil repeats:NO];
+            
+        } else {
+            
+            miss = true;
             [self.redSound play];
         }
         
+    } else if(fabs(self.ballVelocityX) < 5 && fabs(self.ballVelocityY) < 5) {
+            
+        [self.gameTimer invalidate];
+        shots++;
+        [self.gameTimer invalidate];
+        NSString *shotString = [NSString stringWithFormat:@"Shots: %i", shots];
+        self.shotLabel.text = shotString;
+        
+        [self.view setUserInteractionEnabled:YES];
+        self.placeBallTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(placeBall) userInfo:nil repeats:NO];
     }
     
-    if ([self.overlapArray[15] isEqualToString:@"true"]) {
+    if (fabs(self.ball.center.x) > 800 || self.ball.center.y < -100 || self.ball.center.y > 1000) {
         
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
+        [self.gameTimer invalidate];
+        shots++;
+        [self.gameTimer invalidate];
+        NSString *shotString = [NSString stringWithFormat:@"Shots: %i", shots];
+        self.shotLabel.text = shotString;
         
-    }
-    
-    if ([self.overlapArray[16] isEqualToString:@"true"]) {
-        
-        score = score + ring1Score;
+        [self.view setUserInteractionEnabled:YES];
+        self.placeBallTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(placeBall) userInfo:nil repeats:NO];
         
     }
-    
-    if ([self.overlapArray[17] isEqualToString:@"true"]) {
-        
-        score = score + ring1Score;
-        
-    }
-    
-    if ([self.overlapArray[18] isEqualToString:@"true"]) {
-        
-        score = score + ring1Score;
-        
-    }
-    
-    if ([self.overlapArray[19] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[20] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[21] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[22] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[23] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-    
-    if ([self.overlapArray[24] isEqualToString:@"true"]) {
-        
-        score = score + ring2Score;
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"isSoundOn"]){
-            [self.redSound play];
-        }
-        
-    }
-
-    NSString *scoreString = [NSString stringWithFormat:@"Score: %i", score];
-    self.scoreLabel.text = scoreString;
-    
-    NSString *shotString = [NSString stringWithFormat:@"Shots: %i", shots];
-    self.shotLabel.text = shotString;
-    
-    [self.view setUserInteractionEnabled:YES];
-    
-    self.placeBallTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(placeBall) userInfo:nil repeats:NO];
-
-
 }
 
 
@@ -833,6 +440,44 @@ float swipeTime;
         }
     }
 }
+
+-(void)endGame {
+    
+    self.ngLabel.hidden = NO;
+    self.tiltLabel.hidden = YES;
+    
+    NSInteger best = [[NSUserDefaults standardUserDefaults] integerForKey:@"highScore"];
+    
+    [self.slideSound play];
+    
+    if (score > best) {
+        
+        [[NSUserDefaults standardUserDefaults] setInteger:score forKey:@"highScore"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        [[GameCenterManager sharedManager] saveAndReportScore:(int)score leaderboard:@"HighScore" sortOrder:GameCenterSortOrderHighToLow];
+        
+    }
+    
+    if (score >= 300 && score < 400) {
+        [[GameCenterManager sharedManager] saveAndReportAchievement:@"300points" percentComplete:100 shouldDisplayNotification:YES];
+    }
+    
+    if (score >= 400 && score < 500) {
+        [[GameCenterManager sharedManager] saveAndReportAchievement:@"400points" percentComplete:100 shouldDisplayNotification:YES];
+    }
+    
+    if (score >= 500) {
+        [[GameCenterManager sharedManager] saveAndReportAchievement:@"perfectGame" percentComplete:100 shouldDisplayNotification:YES];
+    }
+    
+    
+    self.ball.hidden = YES;
+    /*  UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Game Over" message:nil delegate:self cancelButtonTitle:@"New Game" otherButtonTitles:nil];
+     alertView.tag = 2;
+     [alertView show];*/
+}
+
 
 
 - (void)didReceiveMemoryWarning {
