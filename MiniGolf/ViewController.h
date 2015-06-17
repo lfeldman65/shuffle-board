@@ -62,10 +62,15 @@
 
 @property (weak, nonatomic) IBOutlet ADBannerView *iAdOutlet;
 
-
 @property (strong, nonatomic) NSMutableArray *overlapArray;
 
+@property (nonatomic, strong) AVAudioPlayer *redSound;
+@property (nonatomic, strong) AVAudioPlayer *slideSound;
+@property (nonatomic, strong) AVAudioPlayer *greenSound;
+@property (nonatomic, strong) AVAudioPlayer *backgroundSound;
+
 - (IBAction)newGamePressed:(id)sender;
+
 
 @end
 

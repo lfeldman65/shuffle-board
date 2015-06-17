@@ -15,7 +15,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *soundLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *soundSwitch;
 @property (weak, nonatomic) IBOutlet UIButton *gcButton;
-@property (weak, nonatomic) IBOutlet UIButton *fullButton;
+@property (strong, nonatomic) IBOutlet UILabel *highScoreLabel;
 
 - (IBAction)soundSwitched:(id)sender;
 - (IBAction)gameCenterPressed:(id)sender;
@@ -35,10 +35,10 @@
     
     [self.backButton setFrame:CGRectMake(0, 0, .3*sWidth, .1*sHeight)];
     self.backButton.center = CGPointMake(.11*sWidth, .11*sHeight);
-    self.backButton.titleLabel.font = [UIFont fontWithName: @"Noteworthy" size: .06*sWidth];
+    self.backButton.titleLabel.font = [UIFont fontWithName: @"Marker Felt" size: .06*sWidth];
     
     [self.soundLabel setFrame:CGRectMake(.6*sWidth, .06*sHeight, .23*sWidth, .1*sHeight)];
-    [[self soundLabel] setFont:[UIFont fontWithName:@"Noteworthy" size:.06*sWidth]];
+    [[self soundLabel] setFont:[UIFont fontWithName:@"Marker Felt" size:.06*sWidth]];
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         
@@ -51,30 +51,34 @@
         
     }
     
-    [self.textView setFrame:CGRectMake(0, 0, .91*sWidth, .62*sHeight)];
+    [self.textView setFrame:CGRectMake(0, 0, .91*sWidth, .6*sHeight)];
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         
-        self.textView.font = [UIFont fontWithName: @"Noteworthy" size: .04*sWidth];
-        self.textView.center = CGPointMake(.5*sWidth, .5*sHeight);
+        self.textView.font = [UIFont fontWithName: @"Marker Felt" size: .04*sWidth];
+        self.textView.center = CGPointMake(.5*sWidth, .48*sHeight);
         
     }
     else {
         
         if(sHeight==480) {
             
-            self.textView.font = [UIFont fontWithName: @"Noteworthy" size: .043*sWidth];
-            self.textView.center = CGPointMake(.5*sWidth, .48*sHeight);
+            self.textView.font = [UIFont fontWithName: @"Marker Felt" size: .043*sWidth];
+            self.textView.center = CGPointMake(.5*sWidth, .46*sHeight);
             
         } else {
             
-            self.textView.font = [UIFont fontWithName: @"Noteworthy" size: .05*sWidth];
-            self.textView.center = CGPointMake(.5*sWidth, .48*sHeight);
+            self.textView.font = [UIFont fontWithName: @"Marker Felt" size: .05*sWidth];
+            self.textView.center = CGPointMake(.5*sWidth, .46*sHeight);
         }
     }
     
+    [self.highScoreLabel setFrame:CGRectMake(0, 0, .9*sWidth, 75)];
+    self.highScoreLabel.center = CGPointMake(.5*sWidth, .7*sHeight);
+    [[self highScoreLabel] setFont:[UIFont fontWithName:@"Marker Felt" size:.06*sWidth]];
+    
     [self.gcButton setFrame:CGRectMake(0, 0, sWidth/2, .1*sHeight)];
-    self.gcButton.center = CGPointMake(sWidth/2, .9*sHeight);
+    self.gcButton.center = CGPointMake(sWidth/2, .83*sHeight);
     [self.gcButton.titleLabel setFont:[UIFont systemFontOfSize:.06*sWidth]];
     self.gcButton.layer.cornerRadius = .3*self.gcButton.layer.frame.size.height;
     self.gcButton.layer.masksToBounds = YES;
@@ -113,6 +117,9 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+    NSInteger best = [[NSUserDefaults standardUserDefaults] integerForKey:@"highScore"];
+    NSString *highScoreString = [NSString stringWithFormat:@"High Score: %ld", (long)best];
+    self.highScoreLabel.text = highScoreString;
     
 }
 
@@ -131,6 +138,10 @@
         
     }
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"soundDidChange"
+     object:self];
     
 }
 
