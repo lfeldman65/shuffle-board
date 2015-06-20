@@ -11,7 +11,8 @@
 #define speedScale .20
 #define speedDamping .98
 #define maxShots 10
-#define tiltScale 1.8
+#define horTol .6
+#define verTol .2
 
 @interface ViewController ()
 
@@ -23,6 +24,8 @@ int shots;
 int totalShots;
 int currentStreak;
 int longestStreak;
+float tiltScale;
+
 
 
 static inline CGPoint rwSub(CGPoint a, CGPoint b) {
@@ -53,22 +56,25 @@ static inline CGPoint rwNormalize(CGPoint a) {
 
 float swipeTime;
 bool miss;
+float SpeedTol;
+
 
 - (void)viewWillLayoutSubviews {
     
-    int iAdHeight;
-    
     [super viewWillLayoutSubviews];
+
+    int iAdHeight;
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         
         iAdHeight = 66;
+
     }
     else {
         
         iAdHeight = 50;
     }
-    
+
     float sWidth = [UIScreen mainScreen].bounds.size.width;
     float sHeight = [UIScreen mainScreen].bounds.size.height;
     float targetSize = .18*sWidth;
@@ -107,11 +113,36 @@ bool miss;
     self.image3.layer.cornerRadius = .5*self.image3.layer.frame.size.height;
     self.image3.layer.masksToBounds = YES;
     
+    [self.leftTilt setFrame:CGRectMake(0, 0, .7*sWidth, .2*sHeight)];
+    self.leftTilt.center = CGPointMake(.5*sWidth, .5*sHeight);
+    
+    [self.rightTilt setFrame:CGRectMake(0, 0, .7*sWidth, .2*sHeight)];
+    self.rightTilt.center = CGPointMake(.5*sWidth, .5*sHeight);
+   
+    
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+    
+    shots = 0;
+    totalShots = 0;
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        
+        SpeedTol = 36;
+        tiltScale = 4.5;
+    }
+    
+    else {
+        
+        SpeedTol = 18;
+        tiltScale = 1.8;
+    }
+    
+    self.leftTilt.hidden = YES;
+    self.rightTilt.hidden = YES;
     
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"wasGameLaunched"]) {
         
@@ -214,7 +245,7 @@ bool miss;
     NSString *tiltString;
     
     self.tiltSpeed = (arc4random() % (maxTilt - minTilt + 1)) + minTilt;
-
+    
     self.leftTilt.hidden = YES;
     self.rightTilt.hidden = YES;
     
@@ -222,13 +253,24 @@ bool miss;
         tiltString = [NSString stringWithFormat:@"Flat"];
     }
     
-    if(self.tiltSpeed > 0) {
-        tiltString = [NSString stringWithFormat:@"%d inches right", self.tiltSpeed];
+    if(self.tiltSpeed == 1) {
+        
+        tiltString = [NSString stringWithFormat:@"%d inch", self.tiltSpeed];
         self.rightTilt.hidden = NO;
     }
     
-    if(self.tiltSpeed < 0) {
-        tiltString = [NSString stringWithFormat:@"%d inches left", -self.tiltSpeed];
+    if(self.tiltSpeed > 1) {
+        tiltString = [NSString stringWithFormat:@"%d inches", self.tiltSpeed];
+        self.rightTilt.hidden = NO;
+    }
+    
+    if(self.tiltSpeed ==  -1) {
+        tiltString = [NSString stringWithFormat:@"%d inch", -self.tiltSpeed];
+        self.leftTilt.hidden = NO;
+    }
+    
+    if(self.tiltSpeed < -1) {
+        tiltString = [NSString stringWithFormat:@"%d inches", -self.tiltSpeed];
         self.leftTilt.hidden = NO;
     }
     
@@ -238,15 +280,17 @@ bool miss;
 
 - (IBAction)newGamePressed:(id)sender {
     
-    if (shots == 0 || shots == totalShots){
-        
-        [self newGame];
-        
-    } else {
+    if (shots > 0 && shots < totalShots) {
         
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Game in Progress" message:@"Are you sure you want to start a new game?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Restart", nil];
         alertView.tag = 1;
         [alertView show];
+        
+    }
+    
+    if (shots == totalShots) {
+        
+        [self newGame];
     }
 
 }
@@ -353,17 +397,15 @@ bool miss;
     
     self.ballVelocityX = speedDamping*(self.ballVelocityX);
     self.ballVelocityY = speedDamping*self.ballVelocityY;
-    
-  //  NSLog(@"velocity = %f", self.ballVelocityY);
-    
- //   self.tiltSpeed = 0;
+
+  //  self.tiltSpeed = 0;
 
     self.ball.center = CGPointMake(self.ball.center.x + self.ballVelocityX + tiltScale*self.tiltSpeed, self.ball.center.y + self.ballVelocityY);
     
   //  if (CGRectIntersectsRect(self.ball.frame, self.image3.frame)) {
-    if ((fabs(self.ball.center.x - self.image3.center.x) < .6*self.image3.frame.size.width) && (fabs(self.ball.center.y - self.image3.center.y) < .2*self.image3.frame.size.width)) {
+    if ((fabs(self.ball.center.x - self.image3.center.x) < horTol*self.image3.frame.size.width) && (fabs(self.ball.center.y - self.image3.center.y) < verTol*self.image3.frame.size.width)) {
         
-        if(fabs(self.ballVelocityX) < 18 && fabs(self.ballVelocityY) < 18 && miss==false) {
+        if(fabs(self.ballVelocityX) < SpeedTol && fabs(self.ballVelocityY) < SpeedTol && miss==false) {
 
             [self.gameTimer invalidate];
             shots++;
@@ -446,7 +488,8 @@ bool miss;
             }
                 
             case 1: {
-                shots = 0;
+               // shots = 0;
+               // totalShots = 0;
                 [self newGame];
                 break;
                 
@@ -462,7 +505,8 @@ bool miss;
         
         switch (buttonIndex) {
             case 0: {
-                shots = 0;
+              //  shots = 0;
+              //  totalShots = 0;
                 [self newGame];
                 break;
             }
@@ -476,6 +520,11 @@ bool miss;
 
 -(void)endGame {
     
+   // shots = 0;
+   // totalShots = 0;
+    
+    self.leftTilt.hidden = YES;
+    self.rightTilt.hidden = YES;
     self.ngLabel.hidden = NO;
     self.tiltLabel.hidden = YES;
     
