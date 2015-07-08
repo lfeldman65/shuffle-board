@@ -33,22 +33,6 @@ static inline CGPoint rwSub(CGPoint a, CGPoint b) {
 }
 
 
-static inline float rwLength(CGPoint a) {
-    return sqrtf(a.x * a.x + a.y * a.y);
-}
-
-// Makes a vector with a length of 1
-
-
-static inline CGPoint rwNormalize(CGPoint a) {
-    float length = rwLength(a);
-    if (length == 0) {
-        length = 1;
-    }
-    return CGPointMake(a.x / length, a.y / length);
-}
-
-
 
 @implementation ViewController
 
@@ -362,7 +346,7 @@ float SpeedTol;
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     
     
-    [self.swipeTimer invalidate];
+  //  [self.swipeTimer invalidate];
     
   //  NSLog(@"the timer stops at %f seconds", swipeTime);
 
@@ -372,8 +356,6 @@ float SpeedTol;
     CGPoint tapVector = rwSub(self.lastPoint, self.firstPoint); // (vector) last point - first point
     
   //  NSLog(@"tapVector = %f %f", tapVector.x, tapVector.y);
-    
-    self.shotVectorUnit = rwNormalize(tapVector);       // unit length 1
     
     self.ballVelocityX = speedScale*tapVector.x;
     self.ballVelocityY = speedScale*tapVector.y;
